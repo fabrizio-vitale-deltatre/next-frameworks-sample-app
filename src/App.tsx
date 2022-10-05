@@ -1,9 +1,8 @@
 import { createResource, JSX, Suspense, ErrorBoundary, For } from "solid-js";
 import { fetchWikipediaOpenSearch } from "./api/wikipedia";
 
-function getSearchTerm() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("q");
+function getSearchTerm(): string | null {
+  return new URLSearchParams(window.location.search).get("q");
 }
 
 function Articles() {
