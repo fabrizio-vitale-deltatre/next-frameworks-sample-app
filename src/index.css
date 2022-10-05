@@ -9,7 +9,6 @@
 :root {
   --navbar-height: 72px;
   --form-height: 42px;
-  overflow: hidden;
 }
 
 body {
@@ -63,9 +62,31 @@ body {
 }
 
 .main {
-  --navbar-spacing: 32px;
+  --main-spacing: 32px;
   width: min(1080px, 96%);
   min-height: 400px;
+  padding: 24px;
+  margin: calc(var(--navbar-height) + var(--main-spacing)) auto
+    var(--main-spacing);
+}
+
+
+.wikipedia-links {
+  display: flex;
+  gap: 16px;
+  flex-flow: row wrap;
+  list-style: none;
+  margin: 0;
   padding: 0;
-  margin: calc(var(--navbar-height) + var(--navbar-spacing)) auto 0;
+}
+
+.wikipedia-links li {
+  list-style: none;
+  flex: 0 0 auto;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.wikipedia-links li::before {
+  content: unset;
 }
