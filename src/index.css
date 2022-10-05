@@ -70,7 +70,6 @@ body {
     var(--main-spacing);
 }
 
-
 .wikipedia-links {
   display: flex;
   gap: 16px;

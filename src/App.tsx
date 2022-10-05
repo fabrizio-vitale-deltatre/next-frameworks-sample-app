@@ -1,10 +1,4 @@
-import {
-  createResource,
-  JSX,
-  Suspense,
-  ErrorBoundary,
-  For,
-} from "solid-js";
+import { createResource, JSX, Suspense, ErrorBoundary, For } from "solid-js";
 import { fetchWikipediaOpenSearch } from "./api/wikipedia";
 
 function getSearchTerm() {
@@ -39,8 +33,6 @@ function Articles() {
 }
 
 export function App(): JSX.Element {
-  const query = getSearchTerm() || "";
-
   const [searchResults] = createResource(
     getSearchTerm,
     fetchWikipediaOpenSearch
@@ -48,12 +40,10 @@ export function App(): JSX.Element {
 
   return (
     <article>
-      <h1>Wikipedia search: {query}</h1>
+      <h1>Wikipedia search: {getSearchTerm() || ""}</h1>
       <ErrorBoundary
         fallback={
-          <div class="row flex-spaces">
-            <div class="alert alert-danger">{String(searchResults.error)}</div>
-          </div>
+          <div class="alert alert-danger">{String(searchResults.error)}</div>
         }
       >
         <Suspense fallback={<div class="alert alert-primary">Loading...</div>}>
