@@ -9,13 +9,19 @@ export type WikipediaSearchResult = [
   string[]
 ];
 
+
+export interface ArticleLink  {
+  title: string;
+  href: string;
+};
+
 function delay(delayMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 export async function fetchWikipediaOpenSearch(
   query: string
-): Promise<WikipediaSearchResult> {
+): Promise<ArticleLink[]> {
   const queryUrl = new URL(
     "https://en.wikipedia.org/w/api.php?action=opensearch&limit=100&namespace=0&format=json&origin=*"
   );
@@ -34,5 +40,7 @@ export async function fetchWikipediaOpenSearch(
 
   await delay(2_000);
 
-  return res.json() as unknown as WikipediaSearchResult;
+  const [, titleList, , urlList]: WikipediaSearchResult = (await res.json() as WikipediaSearchResult);
+
+  return titleList.map((title, i) => ({ title, href: urlList[i] }));
 }

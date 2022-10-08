@@ -6,21 +6,21 @@ function getSearchTerm(): string | null {
 }
 
 function Articles() {
-  const [searchResults] = createResource(
+  const [articles] = createResource(
     getSearchTerm,
     fetchWikipediaOpenSearch
   );
 
   return (
     <ul class="wikipedia-links">
-      <For each={searchResults()?.[1]} fallback={<div>0 results :(</div>}>
-        {(title, idx) => (
+      <For each={articles()} fallback={<div>0 results :(</div>}>
+        {({ title, href }) => (
           <li>
             <a
               target="_blank"
               class="paper-btn btn-primary-outline"
               rel="noopener noreferrer"
-              href={searchResults()?.[3][idx()]}
+              href={href}
             >
               {title}
             </a>
