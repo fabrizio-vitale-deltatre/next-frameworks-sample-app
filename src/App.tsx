@@ -1,51 +1,51 @@
-import { createResource, JSX, Suspense, ErrorBoundary, For } from "solid-js";
-import { fetchWikipediaOpenSearch } from "./api/wikipedia";
+import { Suspense } from "react";
+import { wikipediaArticlesResource } from "./api/wikipedia";
+import { ErrorBoundary } from "./ErrorBoundary";
 
 function getSearchTerm(): string | null {
   return new URLSearchParams(window.location.search).get("q");
 }
 
+const wikipediaRes = wikipediaArticlesResource(getSearchTerm() || "");
+
 function Articles() {
-  const [articles] = createResource(
-    getSearchTerm,
-    fetchWikipediaOpenSearch
-  );
+  const articles = wikipediaRes.read();
 
   return (
-    <ul class="wikipedia-links">
-      <For each={articles()} fallback={<div>0 results :(</div>}>
-        {({ title, href }) => (
-          <li>
-            <a
-              target="_blank"
-              class="paper-btn btn-primary-outline"
-              rel="noopener noreferrer"
-              href={href}
-            >
-              {title}
-            </a>
-          </li>
-        )}
-      </For>
+    <ul className="wikipedia-links">
+      {!articles.length && (
+        <li>
+          <p>0 results :(</p>
+        </li>
+      )}
+      {articles.map(({ title, href }) => (
+        <li key={href}>
+          <a
+            target="_blank"
+            className="paper-btn btn-primary-outline"
+            rel="noopener noreferrer"
+            href={href}
+          >
+            {title}
+          </a>
+        </li>
+      ))}
     </ul>
   );
 }
 
 export function App(): JSX.Element {
-  const [searchResults] = createResource(
-    getSearchTerm,
-    fetchWikipediaOpenSearch
-  );
-
   return (
     <article>
       <h1>Wikipedia search: {getSearchTerm() || ""}</h1>
       <ErrorBoundary
-        fallback={
-          <div class="alert alert-danger">{String(searchResults.error)}</div>
-        }
+        fallback={(err) => (
+          <div className="alert alert-danger">{String(err)}</div>
+        )}
       >
-        <Suspense fallback={<div class="alert alert-primary">Loading...</div>}>
+        <Suspense
+          fallback={<div className="alert alert-primary">Loading...</div>}
+        >
           <Articles />
         </Suspense>
       </ErrorBoundary>
