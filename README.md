@@ -5,7 +5,7 @@
 Repository of the apps used in the talk `Next wave of Javascript frameworks`, whose slides
 are available at https://next-wave-fw-slides.netlify.app/.
 
-Developed by [Guido D'Orsi](https://github.com/gdorsi) [Fabrizio Vitale](https://github.com/FaberVitale).
+Developed by [Guido D'Orsi](https://github.com/gdorsi) & [Fabrizio Vitale](https://github.com/FaberVitale).
 
 ## App versions
 
