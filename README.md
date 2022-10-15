@@ -1,34 +1,26 @@
-## Usage
+# Next wave of Javascript frameworks sample apps
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+## Description
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+Repository of the apps used in the talk `Next wave of Javascript frameworks`, whose slides
+are available at https://next-wave-fw-slides.netlify.app/.
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+Developed by [Guido D'Orsi](https://github.com/gdorsi) [Fabrizio Vitale](https://github.com/FaberVitale).
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## App versions
 
-## Available Scripts
+### Qwik app
 
-In the project directory, you can run:
+- url https://next-wave-fw-qwik.netlify.app/
+- source https://github.com/FaberVitale/next-frameworks-sample-app/tree/qwik
 
-### `npm dev` or `npm start`
+### ReactJS app
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- url https://next-wave-fw-react.netlify.app/
+- source https://github.com/FaberVitale/next-frameworks-sample-app/tree/reactjs
 
-The page will reload if you make edits.<br>
+### Solid app
 
-### `npm run build`
+- url https://next-wave-fw-solid.netlify.app/
+- source https://github.com/FaberVitale/next-frameworks-sample-app/tree/solidjs
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
