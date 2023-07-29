@@ -21,6 +21,7 @@ function delay(delayMs: number): Promise<void> {
 export async function fetchWikipediaOpenSearch(
   query: string,
 ): Promise<ArticleLink[]> {
+  console.log(`fetching-query=${query}`);
   const queryUrl = new URL(
     "https://en.wikipedia.org/w/api.php?action=opensearch&limit=100&namespace=0&format=json&origin=*",
   );
@@ -37,7 +38,7 @@ export async function fetchWikipediaOpenSearch(
     throw new Error(`fetch error: status ${res.status}`);
   }
 
-  await delay(1_000);
+  await delay(2_000);
 
   const [, titleList, , urlList]: WikipediaSearchResult =
     (await res.json()) as WikipediaSearchResult;

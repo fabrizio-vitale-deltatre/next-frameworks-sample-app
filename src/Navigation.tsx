@@ -1,20 +1,12 @@
-import { FC, ReactNode, useEffect } from "react";
+import { createEffect, onCleanup, JSX, ParentComponent } from "solid-js";
 import SpatialNavigation, {
   WillFocusEvent,
   WillUnFocusEvent,
 } from "spatial-navigation-ts";
-import {
-  ArrowKeys,
-  KeyCode,
-  KeyName,
-  appIdSelector,
-  appIds,
-} from "./constants";
+import { appIdSelector, appIds } from "./constants";
 
-export const SpatialNavigationProvider: FC<{ children: ReactNode }> = (
-  props,
-) => {
-  useEffect(() => {
+export const SpatialNavigationProvider: ParentComponent = (props) => {
+  createEffect(() => {
     // Initilizing the spacial navigation library
     SpatialNavigation.init();
 
@@ -27,12 +19,12 @@ export const SpatialNavigationProvider: FC<{ children: ReactNode }> = (
     // Focus the first navigable element.
     SpatialNavigation.focus();
 
-    return () => {
+    onCleanup(() => {
       SpatialNavigation.uninit();
-    };
-  }, []);
+    });
+  });
 
-  useEffect(() => {
+  createEffect(() => {
     const handleGlobalNavigation = (e: KeyboardEvent) => {
       console.log(
         `key-event key=${e.key} repeat=${e.repeat} altKey=${e.altKey} ctrlKey=${e.ctrlKey}`,
@@ -46,17 +38,18 @@ export const SpatialNavigationProvider: FC<{ children: ReactNode }> = (
     window.addEventListener("sn:focused", handleSnFocused as EventListener);
     window.addEventListener("willfocus", handleSnFocused as EventListener);
     document.addEventListener("keydown", handleGlobalNavigation, false);
-    return () => {
+
+    onCleanup(() => {
       window.removeEventListener("willfocus", handleSnFocused as EventListener);
       window.removeEventListener(
         "sn:focused",
         handleSnFocused as EventListener,
       );
       document.removeEventListener("keydown", handleGlobalNavigation, false);
-    };
-  }, []);
+    });
+  });
 
-  useEffect(() => {
+  createEffect(() => {
     const updateOnFocusLost = () => {
       setTimeout(() => {
         if (document.activeElement === document.body) {
@@ -67,9 +60,9 @@ export const SpatialNavigationProvider: FC<{ children: ReactNode }> = (
 
     window.addEventListener("focusout", updateOnFocusLost);
 
-    return () => {
+    onCleanup(() => {
       window.removeEventListener("focusout", updateOnFocusLost);
-    };
+    });
   });
 
   return <>{props.children}</>;

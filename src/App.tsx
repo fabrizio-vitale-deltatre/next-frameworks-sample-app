@@ -1,55 +1,66 @@
-import { FormEvent, Suspense, useState } from "react";
+import {
+  createResource,
+  JSX,
+  Suspense,
+  ErrorBoundary,
+  For,
+  createSignal,
+} from "solid-js";
 import { fetchWikipediaOpenSearch } from "./api/wikipedia";
-import { ErrorBoundary } from "./ErrorBoundary";
 import { SpatialNavigationProvider } from "./Navigation";
-import useSWR, { SWRConfig } from "swr";
 import SpatialNavigation from "spatial-navigation-ts";
 import { appIdSelector, appIds } from "./constants";
 
-function Articles({ query }: { query: string }) {
-  const { data: articles } = useSWR(
-    ["wiki/search", query],
-    query ? ([_, query]) => fetchWikipediaOpenSearch(query) : null,
-    {
-      suspense: true,
-    },
+function Articles(props: { query: string }) {
+  const [articles] = createResource(
+    () => props.query,
+    (search) => (search ? fetchWikipediaOpenSearch(search) : []),
   );
 
   return (
-    <section className="results-section">
-      <h2>{articles.length} results</h2>
-      <ul className="wikipedia-links">
-        {articles.map(({ title, href }, idx) => (
-          <li key={href}>
-            <div
-              id={`wiki-art-${idx}`}
-              data-sn-left={
-                idx === 0
-                  ? appIdSelector("searchSubmit")
-                  : `#wiki-art-${idx - 1}`
-              }
-              data-sn-right={
-                idx < articles.length - 1
-                  ? `#wiki-art-${idx + 1}`
-                  : appIdSelector("backToTop")
-              }
-              tabIndex={-1}
-              role="button"
-              className="wikipedia-item card focusable"
-            >
-              <div className="card-body">
-                <h3 className="card-title">{title}</h3>
+    <section class="results-section">
+      <h2>{articles()?.length || 0} results</h2>
+      <ul class="wikipedia-links">
+        <For
+          each={articles()}
+          fallback={
+            <li>
+              <p>0 results :(</p>
+            </li>
+          }
+        >
+          {({ title }, idx) => (
+            <li>
+              <div
+                id={`wiki-art-${idx()}`}
+                data-sn-left={
+                  idx() === 0
+                    ? appIdSelector("searchSubmit")
+                    : `#wiki-art-${idx() - 1}`
+                }
+                data-sn-right={
+                  idx() < articles.length - 1
+                    ? `#wiki-art-${idx() + 1}`
+                    : appIdSelector("backToTop")
+                }
+                tabIndex={-1}
+                role="button"
+                class="wikipedia-item card focusable"
+              >
+                <div class="card-body">
+                  <h3 class="card-title">{title}</h3>
+                </div>
+                <img
+                  src={`https://picsum.photos/id/${
+                    idx() + 16
+                  }/300/200?grayscale&blur=1`}
+                  loading="lazy"
+                  alt="sample image"
+                />
               </div>
-              <img
-                src={`https://picsum.photos/id/${
-                  idx + 16
-                }/300/200?grayscale&blur=1`}
-                loading="lazy"
-                alt="sample image"
-              />
-            </div>
-          </li>
-        ))}
+            </li>
+          )}
+        </For>
       </ul>
       <div>
         <hr />
@@ -57,7 +68,7 @@ function Articles({ query }: { query: string }) {
           id={appIds.backToTop}
           tabIndex={-1}
           type="button"
-          className="focusable back-to-top"
+          class="focusable back-to-top"
           onClick={() => SpatialNavigation.focus()}
         >
           back to top ⬆
@@ -68,9 +79,11 @@ function Articles({ query }: { query: string }) {
 }
 
 export function App(): JSX.Element {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = createSignal<string>("");
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: JSX.EventHandler<HTMLFormElement, Event> = (evt) => {
+    const nextValue = (evt.currentTarget[0] as HTMLInputElement)?.value || "";
+    console.log(`submit-event, query=${nextValue}`);
     evt.preventDefault();
 
     SpatialNavigation.focus();
@@ -79,58 +92,51 @@ export function App(): JSX.Element {
   };
 
   return (
-    <SWRConfig>
-      <SpatialNavigationProvider>
-        <nav className="border split-nav navbar">
-          <form className="form-group query-form" onSubmit={handleSubmit}>
-            <label className="visually-hidden" htmlFor="q">
-              Search wikipedia
-            </label>
-            <input
-              tabIndex={-1}
-              className="focusable"
-              type="search"
-              name="q"
-              defaultValue=""
-              placeholder="query wikipedia"
-              id={appIds.searchInput}
-            />
-            <button
-              type="reset"
-              tabIndex={-1}
-              className="btn btn-small focusable"
-            >
-              clear
-            </button>
-            <button
-              tabIndex={-1}
-              type="submit"
-              className="btn focusable"
-              id={appIds.searchSubmit}
-            >
-              Submit
-            </button>
-          </form>
-        </nav>
-        <article>
-          <h1>Wikipedia search: {query || ""}</h1>
-          <ErrorBoundary
-            fallback={(err) => (
-              <div className="alert alert-danger">{String(err)}</div>
-            )}
+    <SpatialNavigationProvider>
+      <nav class="border split-nav navbar">
+        <form class="form-group query-form" onSubmit={handleSubmit}>
+          <label class="visually-hidden" for="q">
+            Search wikipedia
+          </label>
+          <input
+            tabIndex={-1}
+            class="focusable"
+            type="search"
+            name="q"
+            placeholder="query wikipedia"
+            id={appIds.searchInput}
+          />
+          <button type="reset" tabIndex={-1} class="btn btn-small focusable">
+            clear
+          </button>
+          <button
+            tabIndex={-1}
+            type="submit"
+            class="btn focusable"
+            id={appIds.searchSubmit}
           >
-            <Suspense
-              fallback={
-                <div className="alert alert-primary">
-                  {query ? "⏳ Loading..." : "Search a wikipedia article"}
-                </div>
-              }
-            >
-              <Articles query={query} />
-            </Suspense>
-          </ErrorBoundary>
-        </article>
-      </SpatialNavigationProvider>
-    </SWRConfig>
+            Submit
+          </button>
+        </form>
+      </nav>
+      <article>
+        <h1>Wikipedia search: {query() || ""}</h1>
+        <ErrorBoundary
+          fallback={(err) => (
+            <div class="alert alert-danger">{String(err)}</div>
+          )}
+        >
+          <Suspense
+            fallback={
+              <div class="alert alert-primary">
+                {query() ? "⏳ Loading..." : "Search a wikipedia article"}
+              </div>
+            }
+          >
+            <Articles query={query()} />
+          </Suspense>
+        </ErrorBoundary>
+      </article>
+    </SpatialNavigationProvider>
   );
 }

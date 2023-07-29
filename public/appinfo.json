@@ -1,10 +1,10 @@
 {
-  "id": "com.deltatre.test-solid.app",
+  "id": "com.deltatre.test-solidjs.app",
   "version": "0.0.1",
   "vendor": "Deltatre",
   "type": "web",
   "main": "index.html",
-  "title": "react-tv-development",
+  "title": "solidjs-tv",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
   "disableBackHistoryAPI": true
