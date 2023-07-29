@@ -1,5 +1,3 @@
-import { suspendPromise } from "./suspendPromise";
-
 export type WikipediaSearchResult = [
   /*  query */
   string,
@@ -8,7 +6,7 @@ export type WikipediaSearchResult = [
   /* description */
   string[],
   /* url */
-  string[]
+  string[],
 ];
 
 export interface ArticleLink {
@@ -21,10 +19,10 @@ function delay(delayMs: number): Promise<void> {
 }
 
 export async function fetchWikipediaOpenSearch(
-  query: string
+  query: string,
 ): Promise<ArticleLink[]> {
   const queryUrl = new URL(
-    "https://en.wikipedia.org/w/api.php?action=opensearch&limit=100&namespace=0&format=json&origin=*"
+    "https://en.wikipedia.org/w/api.php?action=opensearch&limit=100&namespace=0&format=json&origin=*",
   );
 
   queryUrl.searchParams.set("search", query);
@@ -39,18 +37,10 @@ export async function fetchWikipediaOpenSearch(
     throw new Error(`fetch error: status ${res.status}`);
   }
 
-  await delay(2_000);
+  await delay(1_000);
 
   const [, titleList, , urlList]: WikipediaSearchResult =
     (await res.json()) as WikipediaSearchResult;
 
   return titleList.map((title, i) => ({ title, href: urlList[i] }));
-}
-
-export function wikipediaArticlesResource(param: string | null | undefined) {
-  if (!param) {
-    return suspendPromise(Promise.resolve([]));
-  }
-
-  return suspendPromise(fetchWikipediaOpenSearch(param));
 }

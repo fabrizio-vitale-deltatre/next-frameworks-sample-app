@@ -54,8 +54,6 @@ body {
 }
 
 .query-form button[type="submit"] {
-  width: 42px;
-  height: 42px;
   line-height: 1;
   padding: 0.35rem;
   margin: 0;
@@ -63,13 +61,17 @@ body {
 
 .main {
   overflow-x: hidden;
-  max-width: 96%;
+  width: 96%;
   --main-spacing: 32px;
-  width: min(1080px, 96%);
   min-height: 400px;
   padding: 16px;
-  margin: calc(var(--navbar-height) + var(--main-spacing)) auto
-    var(--main-spacing);
+  margin: 0 auto;
+}
+
+.back-to-top {
+  font-size: 1.4rem;
+  padding: 8px;
+  min-width: 300px;
 }
 
 @media screen and (min-width: 780px) {
@@ -79,18 +81,26 @@ body {
 }
 
 .wikipedia-links {
-  display: flex;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  gap: 20px;
   flex-flow: row wrap;
   list-style: none;
-  margin: 0;
+  margin: 0 0 1.4rem;
   padding: 0;
+}
+
+.results-section hr {
+  margin: 2rem 0;
+}
+
+.results-section hr:after,
+.results-section hr:before {
+  font-size: 2rem;
 }
 
 .wikipedia-links li {
   list-style: none;
-  flex: 0 0 auto;
-  width: max-content;
   white-space: nowrap;
 }
 
@@ -98,6 +108,12 @@ body {
   content: unset;
 }
 
+.wikipedia-item {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  word-break: break-all;
+}
 
 input[type="search"] {
   max-width: 160px;
