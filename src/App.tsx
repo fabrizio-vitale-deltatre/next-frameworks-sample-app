@@ -39,7 +39,7 @@ function Articles(props: { query: string }) {
                     : `#wiki-art-${idx() - 1}`
                 }
                 data-sn-right={
-                  idx() < articles.length - 1
+                  idx() < (articles()?.length ?? 0) - 1
                     ? `#wiki-art-${idx() + 1}`
                     : appIdSelector("backToTop")
                 }
