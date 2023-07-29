@@ -7,7 +7,7 @@
     "dev": "vite",
     "clean": "rm -rf dist",
     "build:vite": "vite build",
-    "build:webos": "npm run clean && npm run build:vite && export WEBOS_OUTPUT_DIR=dist/webos WEBOS_APP_DIR=dist/vite && scripts/build.sh",
+    "build:webos": "npm run clean && npm run build:vite && export WEBOS_OUTPUT_DIR=dist/webos WEBOS_APP_DIR=dist/vite-react && scripts/build.sh",
     "serve": "vite preview"
   },
   "license": "MIT",
