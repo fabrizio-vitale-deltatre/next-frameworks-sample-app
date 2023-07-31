@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite dev",
     "clean": "rm -rf dist",
     "build:vite": "vite build",
     "build:webos": "npm run clean && npm run build:vite && export WEBOS_OUTPUT_DIR=dist/webos WEBOS_APP_DIR=dist/vite-solid && scripts/build.sh",
@@ -16,7 +16,7 @@
     "vite-plugin-solid": "^2.7.0",
     "terser": "^5.19.2",
     "typescript": "^4.8.2",
-    "vite": "^3.1.4"
+    "vite": "^4.4.7"
   },
   "dependencies": {
     "solid-js": "^1.5.1",
