@@ -5,13 +5,75 @@ import {
   ErrorBoundary,
   For,
   createSignal,
+  onMount,
+  onCleanup,
+  Show,
 } from "solid-js";
 import { fetchWikipediaOpenSearch } from "./api/wikipedia";
 import { SpatialNavigationProvider } from "./Navigation";
 import SpatialNavigation from "spatial-navigation-ts";
-import { appIdSelector, appIds } from "./constants";
+import {
+  KeyCode,
+  appIdSelector,
+  appIds,
+  sampleArticleContent,
+} from "./constants";
 
-function Articles(props: { query: string }) {
+export const onEnterKeyPress = (
+  evt: KeyboardEvent,
+  listener: (evt: KeyboardEvent) => void,
+) => {
+  if (!evt.repeat && (evt.key === "Enter" || evt.keyCode === KeyCode.ENTER)) {
+    evt.stopPropagation();
+    listener(evt);
+  }
+};
+
+interface Article {
+  title: string;
+  content: string;
+}
+
+function ArticleModal(props: { article: Article; onClose: () => void }) {
+  let closeBtnRef: HTMLButtonElement | undefined = undefined;
+  const handleFocusTrap = () => {
+    setTimeout(() => {
+      closeBtnRef?.focus();
+    }, 0);
+  };
+
+  onMount(() => {
+    handleFocusTrap();
+  });
+
+  onCleanup(() => {
+    SpatialNavigation.focus();
+  });
+
+  return (
+    <div class="modal modal-visible article-modal">
+      <div class="modal-body">
+        <button
+          ref={closeBtnRef}
+          type="button"
+          class="btn-close focusable"
+          tabIndex={-1}
+          onClick={props.onClose}
+          onBlur={handleFocusTrap}
+        >
+          X
+        </button>
+        <h4 class="modal-title">{props.article.title}</h4>
+        <p class="modal-text">{props.article.content}</p>
+      </div>
+    </div>
+  );
+}
+
+function Articles(props: {
+  query: string;
+  onSelectedArticle: (title: string) => void;
+}) {
   const [articles] = createResource(
     () => props.query,
     (search) => (search ? fetchWikipediaOpenSearch(search) : []),
@@ -32,6 +94,9 @@ function Articles(props: { query: string }) {
           {({ title }, idx) => (
             <li>
               <div
+                onKeyDown={(evt) =>
+                  onEnterKeyPress(evt, () => props.onSelectedArticle(title))
+                }
                 id={`wiki-art-${idx()}`}
                 data-sn-left={
                   idx() === 0
@@ -44,7 +109,6 @@ function Articles(props: { query: string }) {
                     : appIdSelector("backToTop")
                 }
                 tabIndex={-1}
-                role="button"
                 class="wikipedia-item card focusable"
               >
                 <div class="card-body">
@@ -80,6 +144,9 @@ function Articles(props: { query: string }) {
 
 export function App(): JSX.Element {
   const [query, setQuery] = createSignal<string>("");
+  const [selectedArticle, setSelectedArticle] = createSignal<string | null>(
+    null,
+  );
 
   const handleSubmit: JSX.EventHandler<HTMLFormElement, Event> = (evt) => {
     const nextValue = (evt.currentTarget[0] as HTMLInputElement)?.value || "";
@@ -133,10 +200,20 @@ export function App(): JSX.Element {
               </div>
             }
           >
-            <Articles query={query()} />
+            <Articles query={query()} onSelectedArticle={setSelectedArticle} />
           </Suspense>
         </ErrorBoundary>
       </article>
+      <Show keyed when={selectedArticle()}>
+        {(article) => (
+          <ArticleModal
+            article={{ title: article, content: sampleArticleContent }}
+            onClose={() => {
+              setSelectedArticle(null);
+            }}
+          />
+        )}
+      </Show>
     </SpatialNavigationProvider>
   );
 }

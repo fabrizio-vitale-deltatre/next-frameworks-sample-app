@@ -81,14 +81,19 @@ body {
 }
 
 .wikipedia-links {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr;
   list-style: none;
   margin: 0 0 1.4rem;
   padding: 0;
+  gap: 24px;
+}
+
+@media screen and (min-width: 640px) {
+  .wikipedia-links {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -124,4 +129,36 @@ body {
 
 input[type="search"] {
   max-width: 160px;
+}
+
+.article-modal.article-modal {
+  z-index: 100;
+}
+
+.article-modal.article-modal .modal-body {
+  min-width: 360px;
+  font-size: 1.2rem;
+}
+
+.article-modal.article-modal .modal-title {
+  margin-bottom: 1.2em;
+}
+
+.article-modal.article-modal .btn-close {
+  font-size: inherit;
+  width: 32px;
+  height: 32px;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0;
+  user-select: none;
+}
+
+.modal-visible.modal {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-visible.modal .modal-body {
+  top: 50%;
 }
